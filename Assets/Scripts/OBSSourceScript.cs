@@ -1087,9 +1087,13 @@ public class OBSSourceScript : MonoBehaviour
 
         float horizontalBorder = windowSize.y - pitchImageHeight;
 
-        pitchImage.rectTransform.position = new Vector3(windowSize.x / 2, windowSize.y / 2f - horizontalBorder / 2f, 0);
+        
+
+        //pitchImage.rectTransform.position = new Vector3(windowSize.x / 2, windowSize.y / 2f - horizontalBorder / 2f, 0);
 
         pitchImage.rectTransform.sizeDelta = new Vector2(pitchImageWidth, pitchImageHeight);
+
+        pitchImage.rectTransform.position = new Vector3(pitchImage.rectTransform.position.x, 0, 0);
 
         pitchImage.texture = pitchTexture;
     }
