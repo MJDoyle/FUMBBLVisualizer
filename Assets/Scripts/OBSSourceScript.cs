@@ -326,6 +326,15 @@ public class OBSSourceScript : MonoBehaviour
 
             blueTeamBlockDiceTexture.Apply();
         }
+
+        Color32[] redTeamBlockDicePixels = uwcTexture.window.GetPixels(10, 542, 140, 35);
+
+        if (redTeamBlockDicePixels[0][0] == 51 && redTeamBlockDicePixels[0][0] == 51 && redTeamBlockDicePixels[0][0] == 51)
+        {
+            redTeamBlockDiceTexture.SetPixels32(redTeamBlockDicePixels);
+
+            redTeamBlockDiceTexture.Apply();
+        }
     }
 
     void SetRedTeamPlayerBox()
@@ -895,8 +904,6 @@ public class OBSSourceScript : MonoBehaviour
 
     void Start()
     {
-        redTeamBlockDice.enabled = false;
-
         SetInducementPositions();
 
         Application.runInBackground = true;
