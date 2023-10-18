@@ -3,12 +3,13 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-
-
 public class OBSSourceScript : MonoBehaviour
 {
     [SerializeField]
     private uWindowCapture.UwcWindowTexture uwcTexture;
+
+    [SerializeField]
+    private GameObject canvas;
 
     private int pitchLeft = 154;
     private int pitchTop = 53;
@@ -17,6 +18,12 @@ public class OBSSourceScript : MonoBehaviour
 
 
     private int tileSize = 30;
+
+    private Vector2 res = new Vector2(1920, 1080);
+
+
+
+
 
 
     public RawImage pitchImage;
@@ -67,7 +74,7 @@ public class OBSSourceScript : MonoBehaviour
     public RawImage blueTeamPlayerBackground;
     public RawImage redTeamPlayerBackground;
 
-
+    public RawImage diceLog;
 
 
 
@@ -122,6 +129,8 @@ public class OBSSourceScript : MonoBehaviour
     private Texture2D blueTeamPlayerNameTexture;
     private Texture2D redTeamPlayerNameTexture;
 
+    private Texture2D diceLogTexture;
+
     [SerializeField]
     private RawImage searchingBackground;
 
@@ -140,11 +149,20 @@ public class OBSSourceScript : MonoBehaviour
     private Text turnTimer;
 
 
+    float scalingFactor = 1.0f;
+
+
+
+    bool inducementsTopDown = true;
+
     void SetPitchPixels()
     {
 
 
-        Color32[] pitchPixels = uwcTexture.window.GetPixels(pitchLeft, pitchTop, pitchWidth, pitchHeight);
+        Color32[] pitchPixels = uwcTexture.window.GetPixels((int)(pitchLeft * scalingFactor), (int)(pitchTop * scalingFactor), (int)(pitchWidth * scalingFactor), (int)(pitchHeight * scalingFactor));
+
+        //Color32[] pitchPixels = uwcTexture.window.GetPixels(0, 0, (int)(pitchWidth * scalingFactor), (int)(pitchHeight * scalingFactor));
+
 
         pitchTexture.SetPixels32(pitchPixels);
 
@@ -463,7 +481,6 @@ public class OBSSourceScript : MonoBehaviour
         blueTeamPlayerBackground.enabled = true;
 
         blueTeamPlayerName.enabled = true;
-
 
         //Name
         Color32[] blueTeamPlayerNamePixels = uwcTexture.window.GetPixels(938, 71, 140, 12);
@@ -865,19 +882,36 @@ public class OBSSourceScript : MonoBehaviour
         blueTurnTexture.Apply();
     }
 
+    void SetDiceLog()
+    {
+        Color32[] diceLogPixels = uwcTexture.window.GetPixels(155, 655, 370, 90);
+
+        diceLogTexture.SetPixels32(diceLogPixels);
+
+        diceLogTexture.Apply();
+    }
+
+
 
     void Start()
     {
         redTeamBlockDice.enabled = false;
 
+        SetInducementPositions();
 
         Application.runInBackground = true;
 
         //Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
 
+
+        //pitchElement = new UIElement((int)(pitchWidth * scalingFactor), (int)(pitchHeight * scalingFactor), canvas);
+
+
         //TEXTURES
 
-        pitchTexture = new Texture2D(pitchWidth, pitchHeight);
+        //pitchElement.Texture = new Texture2D((int)(pitchWidth * scalingFactor), (int)(pitchHeight * scalingFactor));
+
+        pitchTexture = new Texture2D((int)(pitchWidth * scalingFactor), (int)(pitchHeight * scalingFactor));
 
         blueTeamExtrasTexture = new Texture2D(42, 42);
 
@@ -949,6 +983,8 @@ public class OBSSourceScript : MonoBehaviour
         blueTeamPlayersBoxTexture = new Texture2D(145, 430);
 
         redTeamPlayersBoxTexture = new Texture2D(145, 430);
+
+        diceLogTexture = new Texture2D(370, 90);
 
 
         //IMAGES
@@ -1081,15 +1117,26 @@ public class OBSSourceScript : MonoBehaviour
         blueTeamPlayerName.rectTransform.sizeDelta = new Vector2(140, 12);
         blueTeamPlayerName.texture = blueTeamPlayerNameTexture;
 
+        diceLog.rectTransform.sizeDelta = new Vector2(370, 90);
+        diceLog.texture = diceLogTexture;
+
         float pitchImageWidth = windowSize.x - verticalBorderWidth * 2;
 
         float pitchImageHeight = ((float)pitchHeight / (float)pitchWidth) * pitchImageWidth;
 
         float horizontalBorder = windowSize.y - pitchImageHeight;
 
-        
+
 
         //pitchImage.rectTransform.position = new Vector3(windowSize.x / 2, windowSize.y / 2f - horizontalBorder / 2f, 0);
+
+        //pitchElement.Image.rectTransform.sizeDelta = new Vector2(pitchImageWidth, pitchImageHeight);
+
+        //pitchElement.Image.rectTransform.position = new Vector3(pitchImage.rectTransform.position.x, 0, 0);
+
+
+
+
 
         pitchImage.rectTransform.sizeDelta = new Vector2(pitchImageWidth, pitchImageHeight);
 
@@ -1138,11 +1185,58 @@ public class OBSSourceScript : MonoBehaviour
 
     }
 
+
+    private void SetInducementPositions()
+    {
+        if (inducementsTopDown)
+        {
+            redTeamExtras.rectTransform.position = new Vector3(10, 550, 0);
+            redTeamExtras2.rectTransform.position = new Vector3(10, 470, 0);
+            redTeamExtras3.rectTransform.position = new Vector3(10, 390, 0);
+            redTeamExtras4.rectTransform.position = new Vector3(10, 310, 0);
+            redTeamExtras5.rectTransform.position = new Vector3(10, 230, 0);
+            redTeamExtras6.rectTransform.position = new Vector3(10, 150, 0);
+
+            blueTeamExtras.rectTransform.position = new Vector3(1916, 550, 0);
+            blueTeamExtras2.rectTransform.position = new Vector3(1916, 470, 0);
+            blueTeamExtras3.rectTransform.position = new Vector3(1916, 390, 0);
+            blueTeamExtras4.rectTransform.position = new Vector3(1916, 310, 0);
+            blueTeamExtras5.rectTransform.position = new Vector3(1916, 230, 0);
+            blueTeamExtras6.rectTransform.position = new Vector3(1916, 150, 0);
+        }
+
+        else
+        {
+
+            redTeamExtras.rectTransform.position = new Vector3(10, 0, 0);
+            redTeamExtras2.rectTransform.position = new Vector3(10, 80, 0);
+            redTeamExtras3.rectTransform.position = new Vector3(10, 160, 0);
+            redTeamExtras4.rectTransform.position = new Vector3(10, 240, 0);
+            redTeamExtras5.rectTransform.position = new Vector3(10, 320, 0);
+            redTeamExtras6.rectTransform.position = new Vector3(10, 400, 0);
+
+            blueTeamExtras.rectTransform.position = new Vector3(1916, 0, 0);
+            blueTeamExtras2.rectTransform.position = new Vector3(1916, 80, 0);
+            blueTeamExtras3.rectTransform.position = new Vector3(1916, 160, 0);
+            blueTeamExtras4.rectTransform.position = new Vector3(1916, 240, 0);
+            blueTeamExtras5.rectTransform.position = new Vector3(1916, 320, 0);
+            blueTeamExtras6.rectTransform.position = new Vector3(1916, 400, 0);
+        }
+    }
+
     void Update()
     {
         //Input to quit
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
+
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            inducementsTopDown = !inducementsTopDown;
+
+            SetInducementPositions();
+        }
 
 
         //Input to toggle between fullscren and windowed mode
@@ -1163,14 +1257,17 @@ public class OBSSourceScript : MonoBehaviour
         }
 
 
-        else if (uwcTexture.window.width != 1074 || uwcTexture.window.height != 765)
+        else if (uwcTexture.window.width != scalingFactor * 1074 || uwcTexture.window.height != scalingFactor * 765)
         {
+
+
             uwcTexture.RequestWindowUpdate();
             return;
         }
 
         else
         {
+
             uwcTexture.window.RequestUpdateTitle();
         }
 
@@ -1199,6 +1296,8 @@ public class OBSSourceScript : MonoBehaviour
         SetBlueTeamPlayerBox();
 
         SetTurnTime();
+
+        SetDiceLog();
     }
 
     private void FixedUpdate()
